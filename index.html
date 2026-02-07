@@ -84,15 +84,50 @@
         #final-pic { width: 100%; max-width: 280px; margin-top: 20px; cursor: pointer; transition: 0.3s; }
         #final-pic:hover { transform: scale(1.1); }
 
-        .hover-msg {
-            color: #ff4d6d;
-            font-family: 'Dancing Script', cursive;
-            font-size: 18px;
-            opacity: 0;
-            transition: 0.3s;
-            margin-top: 15px;
-        }
-        #final-pic:hover + .hover-msg { opacity: 1; }
+        /* حاوية الصورة */
+.stitch-wrap{
+    position: relative;
+    display: inline-block;
+}
+
+/* فقاعة الكلام */
+.hover-msg{
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
+
+    background: white;
+    color: #ff4d6d;
+    padding: 10px 16px;
+    border-radius: 20px;
+
+    font-family: 'Dancing Script', cursive;
+    font-size: 16px;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.25s;
+}
+
+/* مثلث الفقاعة */
+.hover-msg::after{
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-top-color: white;
+}
+
+/* لما تظهر */
+.hover-msg.show{
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+}
 
         .envelope { font-size: 80px; cursor: pointer; }
 
@@ -300,6 +335,7 @@
     </script>
 </body>
 </html>
+
 
 
 
