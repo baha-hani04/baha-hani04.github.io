@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You ❤️</title>
+    <link rel="icon" type="image/png" href="stitchpic.png">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 400px;
+            display: none;
+            box-sizing: border-box;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .card.active { display: block; }
+
+        .card#final {
+            background: #add8e6;
+            max-width: 500px; 
+            border-radius: 40px;
+        }
+
+        h1 {
+            color: #ff4d6d;
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(28px, 8vw, 40px);
+            margin-bottom: 15px;
+        }
+
+        p {
+            color: #444;
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(18px, 5vw, 24px);
+            line-height: 1.5;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 30px;
+            min-height: 60px;
+        }
+
+        button {
+            padding: 12px 25px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            transition: transform 0.2s, font-size 0.2s;
+        }
+
+        .yes { background: #ff4d6d; color: white; min-width: 100px; position: relative; z-index: 10; }
+        .no { background: #ddd; color: #333; min-width: 80px; position: relative; z-index: 5; }
+
+        #final-pic { width: 100%; max-width: 280px; margin-top: 20px; cursor: pointer; transition: 0.3s; }
+        #final-pic:hover { transform: scale(1.1); }
+
+        .hover-msg {
+            color: #ff4d6d;
+            font-family: 'Dancing Script', cursive;
+            font-size: 18px;
+            opacity: 0;
+            transition: 0.3s;
+            margin-top: 15px;
+        }
+        #final-pic:hover + .hover-msg { opacity: 1; }
+
+        .envelope { font-size: 80px; cursor: pointer; }
+
+        /* ✅ القلوب (نستخدمها للقلوب العادية + الخلفية) */
+        .heart {
+            position: fixed;
+            bottom: -20px;
+            animation: float 4s linear infinite;
+            z-index: 999;
+            pointer-events: none; /* عشان ما تمنع الضغط على الأزرار */
+        }
+
+        @keyframes float {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(-100vh); opacity: 0; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* ✅ تنسيق العداد */
+        #loveCounter{
+            font-family: 'Dancing Script', cursive;
+            color:#ff4d6d;
+            font-size: clamp(18px, 5vw, 22px);
+            margin-top: 15px;
+            line-height: 1.6;
+        }
+        #loveCounter b{
+            color:#ff4d6d;
+            font-weight: 600;
+        }
+
+        /* ✅ اهتزاز + تكبير زر YES */
+        @keyframes wiggle {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-4deg) scale(1.12); }
+            50% { transform: rotate(4deg) scale(1.12); }
+            75% { transform: rotate(-4deg) scale(1.12); }
+            100% { transform: rotate(0deg) scale(1.12); }
+        }
+
+        .yes:hover{
+            animation: wiggle 0.35s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card active" id="env1">
+        <div class="envelope">💌</div>
+        <p>Tap To Open</p>
+    </div>
+
+    <div class="card" id="question">
+        <h1>Hey Shahd ❤️</h1>
+        <p id="q-text">Will you be my Valentine?</p>
+        <div class="buttons" id="btn-container">
+            <button class="yes" id="yesBtn" onclick="yesClick()">Yes 💖</button>
+            <button class="no" id="noBtn">No 🙃</button>
+        </div>
+    </div>
+
+    <div class="card" id="msg1">
+        <p>
+            This time, your gift is not something you can touch.<br><br>
+            It’s a memory.<br>
+            Something special, made just for you, carrying your name.<br><br>
+            It lives on the internet,<br>
+            waiting for you anytime, every time,<br>
+            so whenever you see it… you remember me.
+        </p>
+        <button style="background:#ff4d6d; color:white; width:150px;" onclick="show('env2')">Next ❤️</button>
+    </div>
+
+    <div class="card" id="env2">
+        <div class="envelope">💌</div>
+        <p>One last thing...</p>
+    </div>
+
+    <div class="card" id="final">
+        <h1>I love you ❤️</h1>
+        <p>Forever and always.</p>
+
+        <!-- ✅ العداد -->
+        <p id="loveCounter"></p>
+
+        <p>ur beloved, BAHAA</p>
+        <img src="https://i.imgur.com/d6c6p2F.png" alt="Stitch" id="final-pic" />
+        <div class="hover-msg">Stitch is saying HI Mommy, I LOVE YOU 🌎✨</div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById("noBtn");
+        const yesBtn = document.getElementById("yesBtn");
+        const qText = document.getElementById("q-text");
+
+        let attempts = 0;
+        let yesFontSize = 18;
+
+        let counterStarted = false; // ✅ عشان ما نكرر setInterval
+
+        noBtn.addEventListener("mouseover", () => {
+            attempts++;
+            noBtn.style.position = "fixed";
+            const x = Math.random() * (window.innerWidth - 100);
+            const y = Math.random() * (window.innerHeight - 100);
+            noBtn.style.left = x + "px";
+            noBtn.style.top = y + "px";
+
+            if (attempts <= 3) {
+                yesFontSize += 4; 
+                yesBtn.style.fontSize = yesFontSize + "px";
+                yesBtn.style.padding = (12 + attempts * 2) + "px " + (25 + attempts * 5) + "px";
+            }
+
+            if (attempts >= 3) {
+                noBtn.style.display = "none";
+                qText.innerText = "you have no choice 7ayati";
+                qText.style.color = "#ff4d6d";
+                qText.style.fontWeight = "bold";
+            }
+        });
+
+        function show(id) {
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        // ✅ عداد الحب من 30/8/2024 الساعة 2 PM
+        function loveCounter() {
+            if (counterStarted) return;
+            counterStarted = true;
+
+            const start = new Date("2024-08-30T14:00:00");
+
+            setInterval(() => {
+                const now = new Date();
+                const diff = now - start;
+
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((diff / (1000 * 60)) % 60);
+                const seconds = Math.floor((diff / 1000) % 60);
+
+                document.getElementById("loveCounter").innerHTML =
+                    `Loving you for <br>
+                    <b>${days}</b> days 
+                    <b>${hours}</b> hours 
+                    <b>${minutes}</b> minutes 
+                    <b>${seconds}</b> seconds ❤️`;
+            }, 1000);
+        }
+
+        // ✅ خلفية قلوب/نجوم تطلع طول الوقت
+        function floatingHearts(){
+            setInterval(()=>{
+                const h = document.createElement("div");
+                h.className = "heart";
+
+                const shapes = ["❤️","💖","💕","✨"];
+                h.innerText = shapes[Math.floor(Math.random()*shapes.length)];
+
+                h.style.left = Math.random()*100 + "vw";
+                h.style.fontSize = (14 + Math.random()*18) + "px";
+
+                // نخليها أبطأ شوي عن القلوب اللي بتطلع بعد Yes
+                h.style.animationDuration = (4 + Math.random()*3) + "s";
+
+                document.body.appendChild(h);
+                setTimeout(()=>h.remove(), 7000);
+            }, 900);
+        }
+
+        // عند فتح الظرف الأول، نذهب للسؤال
+        document.querySelector("#env1 .envelope").onclick = () => show('question');
+        
+        // ✅ عند فتح الظرف الثاني، نذهب للنهاية ونشغل العداد
+        document.querySelector("#env2 .envelope").onclick = () => {
+            show('final');
+            loveCounter();
+        };
+
+        function yesClick() {
+            // عند الضغط على Yes، ننتقل للرسالة (msg1) ونبدأ تأثير القلوب
+            show('msg1');
+            hearts();
+        }
+
+        function hearts() {
+            setInterval(() => {
+                const h = document.createElement("div");
+                h.className = "heart";
+                h.innerText = "❤️";
+                h.style.left = Math.random() * 100 + "vw";
+                document.body.appendChild(h);
+                setTimeout(() => h.remove(), 4000);
+            }, 300);
+        }
+
+        // ✅ شغّل خلفية القلوب من أول ما تفتح الصفحة
+        floatingHearts();
+    </script>
+</body>
+</html>
