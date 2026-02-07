@@ -1,341 +1,400 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="description" content="A tiny place on the internet made to hold a beautiful memory for you.">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-site-verification" content="Wc4EP3ipbttk0-kJDbikHj6h2EOeQOZpGIz1opd2cZk" />
-    <title>For You ❤️</title>
-    <link rel="icon" href="/favicon.ico" sizes="any">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&display=swap" rel="stylesheet">
+  <meta name="description" content="A tiny place on the internet made to hold a beautiful memory for you.">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-site-verification" content="Wc4EP3ipbttk0-kJDbikHj6h2EOeQOZpGIz1opd2cZk" />
+  <title>For You ❤️</title>
 
-    <style>
-        body {
-            margin: 0;
-            min-height: 100vh;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow-x: hidden;
-            padding: 20px;
-            box-sizing: border-box;
-        }
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 30px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            width: 100%;
-            max-width: 400px;
-            display: none;
-            box-sizing: border-box;
-            animation: fadeIn 0.5s ease-in;
-        }
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&display=swap" rel="stylesheet">
 
-        .card.active { display: block; }
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+      padding: 20px;
+      box-sizing: border-box;
+    }
 
-        .card#final {
-            background: #add8e6;
-            max-width: 500px; 
-            border-radius: 40px;
-        }
+    /* ✅ الكارد */
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 30px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      width: 100%;
+      max-width: 400px;
+      box-sizing: border-box;
 
-        h1 {
-            color: #ff4d6d;
-            font-family: 'Dancing Script', cursive;
-            font-size: clamp(28px, 8vw, 40px);
-            margin-bottom: 15px;
-        }
+      /* مخفي افتراضياً */
+      display: none;
+      opacity: 0;
+      transform: translateY(14px) scale(0.98);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
 
-        p {
-            color: #444;
-            font-family: 'Dancing Script', cursive;
-            font-size: clamp(18px, 5vw, 24px);
-            line-height: 1.5;
-        }
+    /* ✅ لما تكون الصفحة فعّالة */
+    .card.active {
+      display: block;
+    }
 
-        .buttons {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            margin-top: 30px;
-            min-height: 60px;
-        }
+    /* ✅ بعد ما تنعرض لحظة، نخليها تدخل بسلاسة */
+    .card.active.showing {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
 
-        button {
-            padding: 12px 25px;
-            border-radius: 50px;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
-            transition: transform 0.2s, font-size 0.2s;
-        }
+    .card#final {
+      background: #add8e6;
+      max-width: 500px;
+      border-radius: 40px;
+    }
 
-        .yes { background: #ff4d6d; color: white; min-width: 100px; position: relative; z-index: 10; }
-        .no { background: #ddd; color: #333; min-width: 80px; position: relative; z-index: 5; }
+    h1 {
+      color: #ff4d6d;
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(28px, 8vw, 40px);
+      margin-bottom: 15px;
+    }
 
-        #final-pic { width: 100%; max-width: 280px; margin-top: 20px; cursor: pointer; transition: 0.3s; }
-        #final-pic:hover { transform: scale(1.1); }
+    p {
+      color: #444;
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(18px, 5vw, 24px);
+      line-height: 1.5;
+    }
 
-        /* حاوية الصورة */
-.stitch-wrap{
-    position: relative;
-    display: inline-block;
-}
+    .buttons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin-top: 30px;
+      min-height: 60px;
+    }
 
-/* فقاعة الكلام */
-.hover-msg{
-    position: absolute;
-    bottom: 110%;
-    left: 50%;
-    transform: translateX(-50%) scale(0.8);
+    button {
+      padding: 12px 25px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      transition: transform 0.2s, font-size 0.2s, opacity 0.2s;
+    }
+    button:active { transform: scale(0.98); }
 
-    background: white;
-    color: #ff4d6d;
-    padding: 10px 16px;
-    border-radius: 20px;
+    .yes { background: #ff4d6d; color: white; min-width: 100px; position: relative; z-index: 10; }
+    .no  { background: #ddd; color: #333; min-width: 80px;  position: relative; z-index: 5; }
 
-    font-family: 'Dancing Script', cursive;
-    font-size: 16px;
+    /* ✅ Stitch */
+    #final-pic {
+      width: 100%;
+      max-width: 280px;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    /* للموبايل أفضل من hover */
+    #final-pic:active { transform: scale(1.04); }
 
-    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    /* ✅ فقاعة الكلام */
+    .stitch-wrap{
+      position: relative;
+      display: inline-block;
+    }
 
-    opacity: 0;
-    pointer-events: none;
-    transition: 0.25s;
-}
+    .hover-msg{
+      position: absolute;
+      bottom: 110%;
+      left: 50%;
+      transform: translateX(-50%) scale(0.85);
 
-/* مثلث الفقاعة */
-.hover-msg::after{
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 8px solid transparent;
-    border-top-color: white;
-}
+      background: white;
+      color: #ff4d6d;
+      padding: 10px 16px;
+      border-radius: 20px;
 
-/* لما تظهر */
-.hover-msg.show{
-    opacity: 1;
-    transform: translateX(-50%) scale(1);
-}
+      font-family: 'Dancing Script', cursive;
+      font-size: 16px;
 
-        .envelope { font-size: 80px; cursor: pointer; }
+      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
 
-        /* ✅ القلوب (نستخدمها للقلوب العادية + الخلفية) */
-        .heart {
-            position: fixed;
-            bottom: -20px;
-            animation: float 4s linear infinite;
-            z-index: 999;
-            pointer-events: none; /* عشان ما تمنع الضغط على الأزرار */
-        }
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.25s ease;
+      white-space: nowrap;
+    }
 
-        @keyframes float {
-            from { transform: translateY(0); opacity: 1; }
-            to { transform: translateY(-100vh); opacity: 0; }
-        }
+    .hover-msg::after{
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 8px solid transparent;
+      border-top-color: white;
+    }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
+    .hover-msg.show{
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
 
-        /* ✅ تنسيق العداد */
-        #loveCounter{
-            font-family: 'Dancing Script', cursive;
-            color:#ff4d6d;
-            font-size: clamp(18px, 5vw, 22px);
-            margin-top: 15px;
-            line-height: 1.6;
-        }
-        #loveCounter b{
-            color:#ff4d6d;
-            font-weight: 600;
-        }
+    .envelope { font-size: 80px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 
-        /* ✅ اهتزاز + تكبير زر YES */
-        @keyframes wiggle {
-            0% { transform: rotate(0deg) scale(1); }
-            25% { transform: rotate(-4deg) scale(1.12); }
-            50% { transform: rotate(4deg) scale(1.12); }
-            75% { transform: rotate(-4deg) scale(1.12); }
-            100% { transform: rotate(0deg) scale(1.12); }
-        }
+    /* ✅ القلوب */
+    .heart {
+      position: fixed;
+      bottom: -20px;
+      animation: float 4s linear infinite;
+      z-index: 999;
+      pointer-events: none;
+    }
 
-        .yes:hover{
-            animation: wiggle 0.35s ease-in-out infinite;
-        }
-    </style>
+    @keyframes float {
+      from { transform: translateY(0); opacity: 1; }
+      to   { transform: translateY(-100vh); opacity: 0; }
+    }
+
+    /* ✅ العداد */
+    #loveCounter{
+      font-family: 'Dancing Script', cursive;
+      color:#ff4d6d;
+      font-size: clamp(18px, 5vw, 22px);
+      margin-top: 15px;
+      line-height: 1.6;
+    }
+    #loveCounter b{
+      color:#ff4d6d;
+      font-weight: 600;
+    }
+
+    /* ✅ اهتزاز زر YES */
+    @keyframes wiggle {
+      0% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(-4deg) scale(1.12); }
+      50% { transform: rotate(4deg) scale(1.12); }
+      75% { transform: rotate(-4deg) scale(1.12); }
+      100% { transform: rotate(0deg) scale(1.12); }
+    }
+    .yes:hover{ animation: wiggle 0.35s ease-in-out infinite; }
+  </style>
 </head>
+
 <body>
 
-    <div class="card active" id="env1">
-        <div class="envelope">💌</div>
-        <p>Tap To Open</p>
+  <div class="card active" id="env1">
+    <div class="envelope">💌</div>
+    <p>Tap To Open</p>
+  </div>
+
+  <div class="card" id="question">
+    <h1>Hey Shahd ❤️</h1>
+    <p id="q-text">Will you be my Valentine?</p>
+
+    <div class="buttons" id="btn-container">
+      <button class="yes" id="yesBtn">Yes 💖</button>
+      <button class="no" id="noBtn">No 🙃</button>
     </div>
+  </div>
 
-    <div class="card" id="question">
-        <h1>Hey Shahd ❤️</h1>
-        <p id="q-text">Will you be my Valentine?</p>
-        <div class="buttons" id="btn-container">
-            <button class="yes" id="yesBtn" onclick="yesClick()">Yes 💖</button>
-            <button class="no" id="noBtn">No 🙃</button>
-        </div>
+  <div class="card" id="msg1">
+    <p>
+      This time, your gift is not something you can touch.<br><br>
+      It’s a memory.<br>
+      Something special, made just for you, carrying your name.<br><br>
+      It lives on the internet,<br>
+      waiting for you anytime, every time,<br>
+      so whenever you see it… you remember me.
+    </p>
+    <button style="background:#ff4d6d; color:white; width:150px;" id="nextBtn">Next ❤️</button>
+  </div>
+
+  <div class="card" id="env2">
+    <div class="envelope">💌</div>
+    <p>One last thing...</p>
+  </div>
+
+  <div class="card" id="final">
+    <h1>I love you ❤️</h1>
+    <p>Forever and always.</p>
+
+    <p id="loveCounter"></p>
+
+    <p>ur beloved, BAHAA</p>
+
+    <div class="stitch-wrap">
+      <img src="https://i.imgur.com/d6c6p2F.png" alt="Stitch" id="final-pic" />
+      <div class="hover-msg" id="stitchMsg">Stitch is saying HI Mommy, I LOVE YOU 🌎✨</div>
     </div>
+  </div>
 
-    <div class="card" id="msg1">
-        <p>
-            This time, your gift is not something you can touch.<br><br>
-            It’s a memory.<br>
-            Something special, made just for you, carrying your name.<br><br>
-            It lives on the internet,<br>
-            waiting for you anytime, every time,<br>
-            so whenever you see it… you remember me.
-        </p>
-        <button style="background:#ff4d6d; color:white; width:150px;" onclick="show('env2')">Next ❤️</button>
-    </div>
+  <script>
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const qText = document.getElementById("q-text");
 
-    <div class="card" id="env2">
-        <div class="envelope">💌</div>
-        <p>One last thing...</p>
-    </div>
+    const nextBtn = document.getElementById("nextBtn");
 
-    <div class="card" id="final">
-        <h1>I love you ❤️</h1>
-        <p>Forever and always.</p>
+    let attempts = 0;
+    let yesFontSize = 18;
 
-        <!-- ✅ العداد -->
-        <p id="loveCounter"></p>
+    let counterStarted = false;
 
-        <p>ur beloved, BAHAA</p>
-        <img src="https://i.imgur.com/d6c6p2F.png" alt="Stitch" id="final-pic" />
-        <div class="hover-msg">Stitch is saying HI Mommy, I LOVE YOU 🌎✨</div>
-    </div>
+    // ✅ انتقال مرتب (يمنع السرعة والضغط المتكرر)
+    let isTransitioning = false;
+    const TRANSITION_MS = 520;
 
-    <script>
-        const noBtn = document.getElementById("noBtn");
-        const yesBtn = document.getElementById("yesBtn");
-        const qText = document.getElementById("q-text");
+    function show(id) {
+      if (isTransitioning) return;
+      isTransitioning = true;
 
-        let attempts = 0;
-        let yesFontSize = 18;
+      // أخفي كل الكروت
+      document.querySelectorAll('.card').forEach(c => {
+        c.classList.remove('showing');
+        c.classList.remove('active');
+      });
 
-        let counterStarted = false; // ✅ عشان ما نكرر setInterval
+      const el = document.getElementById(id);
+      el.classList.add('active');
 
-        noBtn.addEventListener("mouseover", () => {
-            attempts++;
-            noBtn.style.position = "fixed";
-            const x = Math.random() * (window.innerWidth - 100);
-            const y = Math.random() * (window.innerHeight - 100);
-            noBtn.style.left = x + "px";
-            noBtn.style.top = y + "px";
-
-            if (attempts <= 3) {
-                yesFontSize += 4; 
-                yesBtn.style.fontSize = yesFontSize + "px";
-                yesBtn.style.padding = (12 + attempts * 2) + "px " + (25 + attempts * 5) + "px";
-            }
-
-            if (attempts >= 3) {
-                noBtn.style.display = "none";
-                qText.innerText = "you have no choice 7ayati";
-                qText.style.color = "#ff4d6d";
-                qText.style.fontWeight = "bold";
-            }
+      // تأخير بسيط عشان الانتقال يشتغل حتى لو display تغيّر
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          el.classList.add('showing');
         });
+      });
 
-        function show(id) {
-            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
+      setTimeout(() => {
+        isTransitioning = false;
+      }, TRANSITION_MS);
+    }
 
-        // ✅ عداد الحب من 30/8/2024 الساعة 2 PM
-        function loveCounter() {
-            if (counterStarted) return;
-            counterStarted = true;
+    // زر No يتحرك
+    noBtn.addEventListener("mouseover", () => {
+      attempts++;
+      noBtn.style.position = "fixed";
+      const x = Math.random() * (window.innerWidth - 100);
+      const y = Math.random() * (window.innerHeight - 100);
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
 
-            const start = new Date("2024-08-30T14:00:00");
+      if (attempts <= 3) {
+        yesFontSize += 4;
+        yesBtn.style.fontSize = yesFontSize + "px";
+        yesBtn.style.padding = (12 + attempts * 2) + "px " + (25 + attempts * 5) + "px";
+      }
 
-            setInterval(() => {
-                const now = new Date();
-                const diff = now - start;
+      if (attempts >= 3) {
+        noBtn.style.display = "none";
+        qText.innerText = "you have no choice 7ayati";
+        qText.style.color = "#ff4d6d";
+        qText.style.fontWeight = "bold";
+      }
+    });
 
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                const minutes = Math.floor((diff / (1000 * 60)) % 60);
-                const seconds = Math.floor((diff / 1000) % 60);
+    // ✅ عداد الحب
+    function loveCounter() {
+      if (counterStarted) return;
+      counterStarted = true;
 
-                document.getElementById("loveCounter").innerHTML =
-                    `Loving you for <br>
-                    <b>${days}</b> days 
-                    <b>${hours}</b> hours 
-                    <b>${minutes}</b> minutes 
-                    <b>${seconds}</b> seconds ❤️`;
-            }, 1000);
-        }
+      const start = new Date("2024-08-30T14:00:00");
 
-        // ✅ خلفية قلوب/نجوم تطلع طول الوقت
-        function floatingHearts(){
-            setInterval(()=>{
-                const h = document.createElement("div");
-                h.className = "heart";
+      setInterval(() => {
+        const now = new Date();
+        const diff = now - start;
 
-                const shapes = ["❤️","💖","💕","✨"];
-                h.innerText = shapes[Math.floor(Math.random()*shapes.length)];
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
 
-                h.style.left = Math.random()*100 + "vw";
-                h.style.fontSize = (14 + Math.random()*18) + "px";
+        document.getElementById("loveCounter").innerHTML =
+          `Loving you for <br>
+          <b>${days}</b> days
+          <b>${hours}</b> hours
+          <b>${minutes}</b> minutes
+          <b>${seconds}</b> seconds ❤️`;
+      }, 1000);
+    }
 
-                // نخليها أبطأ شوي عن القلوب اللي بتطلع بعد Yes
-                h.style.animationDuration = (4 + Math.random()*3) + "s";
+    // ✅ خلفية قلوب/نجوم
+    function floatingHearts(){
+      setInterval(()=>{
+        const h = document.createElement("div");
+        h.className = "heart";
 
-                document.body.appendChild(h);
-                setTimeout(()=>h.remove(), 7000);
-            }, 900);
-        }
+        const shapes = ["❤️","💖","💕","✨"];
+        h.innerText = shapes[Math.floor(Math.random()*shapes.length)];
 
-        // عند فتح الظرف الأول، نذهب للسؤال
-        document.querySelector("#env1 .envelope").onclick = () => show('question');
-        
-        // ✅ عند فتح الظرف الثاني، نذهب للنهاية ونشغل العداد
-        document.querySelector("#env2 .envelope").onclick = () => {
-            show('final');
-            loveCounter();
-        };
+        h.style.left = Math.random()*100 + "vw";
+        h.style.fontSize = (14 + Math.random()*18) + "px";
+        h.style.animationDuration = (4 + Math.random()*3) + "s";
 
-        function yesClick() {
-            // عند الضغط على Yes، ننتقل للرسالة (msg1) ونبدأ تأثير القلوب
-            show('msg1');
-            hearts();
-        }
+        document.body.appendChild(h);
+        setTimeout(()=>h.remove(), 7000);
+      }, 900);
+    }
 
-        function hearts() {
-            setInterval(() => {
-                const h = document.createElement("div");
-                h.className = "heart";
-                h.innerText = "❤️";
-                h.style.left = Math.random() * 100 + "vw";
-                document.body.appendChild(h);
-                setTimeout(() => h.remove(), 4000);
-            }, 300);
-        }
+    // قلوب عند Yes
+    function hearts() {
+      setInterval(() => {
+        const h = document.createElement("div");
+        h.className = "heart";
+        h.innerText = "❤️";
+        h.style.left = Math.random() * 100 + "vw";
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 4000);
+      }, 300);
+    }
 
-        // ✅ شغّل خلفية القلوب من أول ما تفتح الصفحة
-        floatingHearts();
-    </script>
+    // ✅ الأحداث
+    document.querySelector("#env1 .envelope").addEventListener("click", () => show('question'));
+
+    yesBtn.addEventListener("click", () => {
+      show('msg1');
+      hearts();
+    });
+
+    nextBtn.addEventListener("click", () => show('env2'));
+
+    document.querySelector("#env2 .envelope").addEventListener("click", () => {
+      show('final');
+      loveCounter();
+    });
+
+    // ✅ فقاعة Stitch عند الضغط
+    const stitchPic = document.getElementById("final-pic");
+    const stitchMsg = document.getElementById("stitchMsg");
+
+    stitchPic.addEventListener("click", () => {
+      stitchMsg.classList.toggle("show");
+    });
+
+    // شغل خلفية القلوب من أول ما تفتح الصفحة
+    floatingHearts();
+
+    // ✅ أول كارد (env1) خليها تظهر بسلاسة كمان
+    requestAnimationFrame(() => {
+      document.getElementById("env1").classList.add("showing");
+    });
+  </script>
+
 </body>
 </html>
-
 
 
 
