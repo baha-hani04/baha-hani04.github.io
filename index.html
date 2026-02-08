@@ -10,7 +10,6 @@
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&display=swap" rel="stylesheet">
 
   <style>
@@ -27,7 +26,6 @@
       box-sizing: border-box;
     }
 
-    /* ✅ الكارد */
     .card {
       background: white;
       padding: 30px;
@@ -38,19 +36,14 @@
       max-width: 400px;
       box-sizing: border-box;
 
-      /* مخفي افتراضياً */
       display: none;
       opacity: 0;
-      transform: translateY(14px) scale(0.98);
-      transition: opacity 0.5s ease, transform 0.5s ease;
+      transform: translateY(18px) scale(0.98);
+      transition: opacity 1s ease, transform 1s ease; /* ✅ أبطأ */
     }
 
-    /* ✅ لما تكون الصفحة فعّالة */
-    .card.active {
-      display: block;
-    }
+    .card.active { display: block; }
 
-    /* ✅ بعد ما تنعرض لحظة، نخليها تدخل بسلاسة */
     .card.active.showing {
       opacity: 1;
       transform: translateY(0) scale(1);
@@ -92,13 +85,18 @@
       cursor: pointer;
       font-size: 18px;
       transition: transform 0.2s, font-size 0.2s, opacity 0.2s;
+      -webkit-tap-highlight-color: transparent;
     }
     button:active { transform: scale(0.98); }
 
-    .yes { background: #ff4d6d; color: white; min-width: 100px; position: relative; z-index: 10; }
-    .no  { background: #ddd; color: #333; min-width: 80px;  position: relative; z-index: 5; }
+    .yes { background: #ff4d6d; color: white; min-width: 110px; position: relative; z-index: 10; }
+    .no  { background: #ddd; color: #333; min-width: 90px;  position: relative; z-index: 5; }
 
-    /* ✅ Stitch */
+    /* ✅ NO يهرب بشكل ناعم */
+    #noBtn{
+      transition: transform 0.25s ease;
+    }
+
     #final-pic {
       width: 100%;
       max-width: 280px;
@@ -107,10 +105,8 @@
       transition: 0.2s;
       -webkit-tap-highlight-color: transparent;
     }
-    /* للموبايل أفضل من hover */
     #final-pic:active { transform: scale(1.04); }
 
-    /* ✅ فقاعة الكلام */
     .stitch-wrap{
       position: relative;
       display: inline-block;
@@ -155,7 +151,6 @@
 
     .envelope { font-size: 80px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 
-    /* ✅ القلوب */
     .heart {
       position: fixed;
       bottom: -20px;
@@ -169,7 +164,6 @@
       to   { transform: translateY(-100vh); opacity: 0; }
     }
 
-    /* ✅ العداد */
     #loveCounter{
       font-family: 'Dancing Script', cursive;
       color:#ff4d6d;
@@ -177,12 +171,8 @@
       margin-top: 15px;
       line-height: 1.6;
     }
-    #loveCounter b{
-      color:#ff4d6d;
-      font-weight: 600;
-    }
+    #loveCounter b{ color:#ff4d6d; font-weight: 600; }
 
-    /* ✅ اهتزاز زر YES */
     @keyframes wiggle {
       0% { transform: rotate(0deg) scale(1); }
       25% { transform: rotate(-4deg) scale(1.12); }
@@ -233,7 +223,6 @@
     <p>Forever and always.</p>
 
     <p id="loveCounter"></p>
-
     <p>ur beloved, BAHAA</p>
 
     <div class="stitch-wrap">
@@ -245,24 +234,21 @@
   <script>
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
-    const qText = document.getElementById("q-text");
-
+    const qText  = document.getElementById("q-text");
     const nextBtn = document.getElementById("nextBtn");
 
     let attempts = 0;
     let yesFontSize = 18;
-
     let counterStarted = false;
 
-    // ✅ انتقال مرتب (يمنع السرعة والضغط المتكرر)
+    // ✅ انتقال أبطأ
     let isTransitioning = false;
-    const TRANSITION_MS = 520;
+    const TRANSITION_MS = 1000;
 
     function show(id) {
       if (isTransitioning) return;
       isTransitioning = true;
 
-      // أخفي كل الكروت
       document.querySelectorAll('.card').forEach(c => {
         c.classList.remove('showing');
         c.classList.remove('active');
@@ -271,7 +257,6 @@
       const el = document.getElementById(id);
       el.classList.add('active');
 
-      // تأخير بسيط عشان الانتقال يشتغل حتى لو display تغيّر
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           el.classList.add('showing');
@@ -283,14 +268,18 @@
       }, TRANSITION_MS);
     }
 
-    // زر No يتحرك
-    noBtn.addEventListener("mouseover", () => {
+    // ✅ زر No: صار click بدل hover + هروب مرتب داخل نفس الكارد
+    noBtn.addEventListener("click", () => {
       attempts++;
-      noBtn.style.position = "fixed";
-      const x = Math.random() * (window.innerWidth - 100);
-      const y = Math.random() * (window.innerHeight - 100);
-      noBtn.style.left = x + "px";
-      noBtn.style.top = y + "px";
+
+      // حركة هروب داخل نفس المكان (transform)
+      const maxX = 120;
+      const maxY = 25;
+
+      const x = (Math.random() * (maxX * 2)) - maxX; // -maxX to +maxX
+      const y = (Math.random() * (maxY * 2)) - maxY;
+
+      noBtn.style.transform = `translate(${x}px, ${y}px)`;
 
       if (attempts <= 3) {
         yesFontSize += 4;
@@ -299,7 +288,8 @@
       }
 
       if (attempts >= 3) {
-        noBtn.style.display = "none";
+        noBtn.style.opacity = "0";
+        noBtn.style.pointerEvents = "none";
         qText.innerText = "you have no choice 7ayati";
         qText.style.color = "#ff4d6d";
         qText.style.fontWeight = "bold";
@@ -331,7 +321,6 @@
       }, 1000);
     }
 
-    // ✅ خلفية قلوب/نجوم
     function floatingHearts(){
       setInterval(()=>{
         const h = document.createElement("div");
@@ -349,7 +338,6 @@
       }, 900);
     }
 
-    // قلوب عند Yes
     function hearts() {
       setInterval(() => {
         const h = document.createElement("div");
@@ -376,18 +364,15 @@
       loveCounter();
     });
 
-    // ✅ فقاعة Stitch عند الضغط
+    // ✅ فقاعة Stitch
     const stitchPic = document.getElementById("final-pic");
     const stitchMsg = document.getElementById("stitchMsg");
-
     stitchPic.addEventListener("click", () => {
       stitchMsg.classList.toggle("show");
     });
 
-    // شغل خلفية القلوب من أول ما تفتح الصفحة
     floatingHearts();
 
-    // ✅ أول كارد (env1) خليها تظهر بسلاسة كمان
     requestAnimationFrame(() => {
       document.getElementById("env1").classList.add("showing");
     });
