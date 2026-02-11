@@ -26,6 +26,26 @@
       padding: 20px;
       box-sizing: border-box;
     }
+    <!-- 🔐 Love Password Screen -->
+<div id="lockScreen">
+  <div class="lock-box">
+    <h1>For Shahd Only ❤️</h1>
+
+    <p class="lock-text">
+      This website was made only for Shahd,<br>
+      the most beautiful girl in the world 🌍✨<br><br>
+      A tiny place made with love…<br>
+      only her heart has the key.
+    </p>
+
+    <p class="enter-text">Enter the password 💌</p>
+
+    <input type="password" id="passInput" placeholder="••••••••">
+    <button id="unlockBtn">Enter ❤️</button>
+
+    <p id="wrongMsg"></p>
+  </div>
+</div>
 
     .card {
       background: white;
@@ -182,6 +202,78 @@
       100% { transform: rotate(0deg) scale(1.12); }
     }
     .yes:hover{ animation: wiggle 0.35s ease-in-out infinite; }
+    /* 🔐 Lock Screen */
+#lockScreen{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.lock-box{
+  background: white;
+  padding: 35px 25px;
+  border-radius: 30px;
+  text-align: center;
+  max-width: 360px;
+  width: 90%;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+}
+
+.lock-text{
+  font-family: 'Dancing Script', cursive;
+  font-size: 20px;
+  line-height: 1.6;
+  color: #444;
+}
+
+.enter-text{
+  margin-top: 15px;
+  color:#ff4d6d;
+  font-weight: bold;
+}
+
+#passInput{
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 20px;
+  border: 2px solid #ffd1dc;
+  text-align: center;
+  font-size: 18px;
+}
+
+#unlockBtn{
+  margin-top: 12px;
+  background:#ff4d6d;
+  color:white;
+  width:100%;
+  padding:12px;
+  border-radius: 25px;
+  font-size:18px;
+  cursor:pointer;
+}
+
+#wrongMsg{
+  color:red;
+  font-size:14px;
+  margin-top:8px;
+}
+
+/* اهتزاز لو غلط */
+@keyframes shake{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  50%{transform:translateX(6px)}
+  75%{transform:translateX(-6px)}
+  100%{transform:translateX(0)}
+}
+.shake{animation:shake .3s}
+
   </style>
 </head>
 
@@ -377,10 +469,35 @@
     requestAnimationFrame(() => {
       document.getElementById("env1").classList.add("showing");
     });
+    /* 🔐 Password Logic */
+
+const PASSWORD = "2362004"; // ← غيرها للباسورد اللي بدك
+
+const lock = document.getElementById("lockScreen");
+const input = document.getElementById("passInput");
+const btn = document.getElementById("unlockBtn");
+const wrong = document.getElementById("wrongMsg");
+
+function unlock(){
+  if(input.value.toLowerCase() === PASSWORD.toLowerCase()){
+    lock.style.display = "none";
+  } else {
+    wrong.innerText = "Oops… wrong password 7ayati 🙈";
+    input.classList.add("shake");
+    setTimeout(()=>input.classList.remove("shake"),300);
+  }
+}
+
+btn.addEventListener("click", unlock);
+input.addEventListener("keypress", e=>{
+  if(e.key==="Enter") unlock();
+});
+
   </script>
 
 </body>
 </html>
+
 
 
 
